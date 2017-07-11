@@ -20,3 +20,4 @@ class PetharborItem(scrapy.Item):
     detail_link = scrapy.Field()
     pet_image = scrapy.Field()
     animal_type = scrapy.Field()
+    score = scrapy.Field()

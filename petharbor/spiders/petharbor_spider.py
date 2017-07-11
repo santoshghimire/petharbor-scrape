@@ -17,6 +17,7 @@ class PetHarborSpider(scrapy.Spider):
     allowed_domains = ["petharbor.com"]
     miles_values = ['10', '20', '50', '100', '200']
     num_rows = 100
+    matching_score_threshold = 70
 
     def __init__(self):
         sys.stdout = codecs.getwriter(
@@ -27,6 +28,22 @@ class PetHarborSpider(scrapy.Spider):
         self.atype = 'cat'
         self.where = "type_" + self.atype.upper()
         self.miles = self.miles_values[0]
+
+        self.lost_pet = {
+            'name': "Effy",
+            "last_seen": "6/20/2017",
+            "city": "Chicago",
+            "zip_code": self.zipcode,
+            "state": "IL",
+            "species": self.atype,
+            "breed": "Domestic Short Hair",
+            "sex": "Female",
+            "description": "Brown tabby with brown, black, "
+                    "and white coat. Sweet natured. Friendly. Older cat.",
+            "Message": "Please help us find our sweet cat! Last seen 6/20/17."
+                    " Contact us if you have any info."
+                    "Last seen in the North Mayfair neighborhood."
+        }
 
     def start_requests(self):
         # construct the results url from zipcode and search radius
