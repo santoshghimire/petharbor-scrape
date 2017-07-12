@@ -58,24 +58,20 @@ class GetMatchPercentage(object):
             breed_match = 1
         else:
             breed_match = self.similar(self.lost_pet['breed'], item['breed'])
-        # print("breed_match = {}".format(breed_match))
 
         # compare the color
         color_match = self.match(
             item['main_color'], self.lost_pet['description'])
-        # print("color_match = {}".format(color_match))
 
         if self.match(self.lost_pet['sex'], item['gender'], gender=True):
             gender_match = 1
         else:
             gender_match = self.similar(self.lost_pet['sex'], item['gender'])
-        # print("gender_match = {}".format(gender_match))
 
         if self.match(self.lost_pet['name'], item['name']):
             name_match = 1
         else:
             name_match = self.similar(self.lost_pet['name'], item['name'])
-        # print("name_match = {}".format(name_match))
 
         final_score = criteria['last_seen'] * last_seen_match + \
             criteria['species'] * species_match +\
