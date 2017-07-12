@@ -65,7 +65,7 @@ class GetMatchPercentage(object):
             item['main_color'], self.lost_pet['description'])
         # print("color_match = {}".format(color_match))
 
-        if self.match(self.lost_pet['sex'], item['gender']):
+        if self.match(self.lost_pet['sex'], item['gender'], gender=True):
             gender_match = 1
         else:
             gender_match = self.similar(self.lost_pet['sex'], item['gender'])
@@ -88,7 +88,22 @@ class GetMatchPercentage(object):
     def similar(self, a, b):
         return SequenceMatcher(None, a, b).ratio()
 
-    def match(self, a, b):
+    def match(self, a, b, gender=False):
+        if gender:
+            # special case of gender
+            if 'female' in a.lower() and 'female' in b.lower():
+                return 1
+            elif (
+                'male' in a.lower() and 'female' not in a.lower() and
+                'male' in b.lower() and 'female' not in b.lower()
+            ):
+                return 1
+            elif 'male' in a.lower() and 'female' in b.lower():
+                return 0
+            elif 'female' in a.lower() and 'male' in b.lower():
+                return 0
+            else:
+                return 0
         if (
             a.lower() in b.lower() or
             b.lower() in a.lower()
@@ -98,5 +113,7 @@ class GetMatchPercentage(object):
             return 0
 
 if __name__ == '__main__':
-    m = GetMatchPercentage()
-    m.process('data.csv')
+    m = GetMatchPercentage('')
+    per = m.match('Female', "Gender Unknown", gender=True)
+    print(per)
+    print(m.similar('Female', 'Gender Unknown'))
