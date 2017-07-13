@@ -99,7 +99,7 @@ class GetMatchPercentage(object):
             elif 'female' in a.lower() and 'male' in b.lower():
                 return 0
             else:
-                return 1
+                return 0.9
         if breed:
             a = a.lower().replace(" ", "")
             b = b.lower().replace(" ", "")
