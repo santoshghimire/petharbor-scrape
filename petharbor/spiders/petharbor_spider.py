@@ -38,11 +38,12 @@ class PetHarborSpider(scrapy.Spider):
             "species": self.atype,
             "breed": "Domestic Short Hair",
             "sex": "Female",
-            "description": "Brown tabby with brown, black, "
-                    "and white coat. Sweet natured. Friendly. Older cat.",
+            "description": "Sweet natured. Friendly. Older cat.",
             "Message": "Please help us find our sweet cat! Last seen 6/20/17."
                     " Contact us if you have any info."
-                    "Last seen in the North Mayfair neighborhood."
+                    "Last seen in the North Mayfair neighborhood.",
+            "age": "4",
+            "primary_color": "Brown tabby with brown, black, and white coat"
         }
 
     def start_requests(self):

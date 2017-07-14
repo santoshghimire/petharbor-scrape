@@ -30,8 +30,9 @@ class GetMatchPercentage(object):
             'last_seen': 0,
             'species': 0,
             'breed': 30,
-            'color': 25,
-            'gender': 40,
+            'color': 20,
+            'gender': 35,
+            'age': 10,
             'name': 5,
         }
 
@@ -60,7 +61,7 @@ class GetMatchPercentage(object):
         # compare the color
         main_color = self.get_transformed_color(item['main_color'])
         color_match = self.match(
-            main_color, self.lost_pet['description'], color=True)
+            main_color, self.lost_pet['primary_color'], color=True)
 
         # compare the gender
         gender_match = self.match(
@@ -72,12 +73,17 @@ class GetMatchPercentage(object):
         else:
             name_match = self.similar(self.lost_pet['name'], item['name'])
 
+        # compare the pet age
+        age_match = self.match_age(self.lost_pet['age'], item['age'])
+
         # calculate the final score
         final_score = criteria['last_seen'] * last_seen_match + \
             criteria['species'] * species_match +\
             criteria['breed'] * breed_match + \
             criteria['color'] * color_match +\
-            criteria['gender'] * gender_match + criteria['name'] * name_match
+            criteria['gender'] * gender_match +\
+            criteria['name'] * name_match +\
+            criteria['age'] * age_match
 
         return int(final_score)
 
@@ -99,7 +105,8 @@ class GetMatchPercentage(object):
             elif 'female' in a.lower() and 'male' in b.lower():
                 return 0
             else:
-                return 0.9
+                # unknown gender
+                return 0.8
         if breed:
             a = a.lower().replace(" ", "")
             b = b.lower().replace(" ", "")
@@ -125,6 +132,39 @@ class GetMatchPercentage(object):
         else:
             return 0
 
+    def match_age(self, pet_age, pharbor_age):
+        """
+        Fuzzy logic to match age
+        """
+        if pet_age.lower() == 'less than 1 year':
+            pet_age = 0
+        elif pet_age.lower() == '+10 Years':
+            pet_age = 10
+        else:
+            try:
+                pet_age = int(pet_age)
+            except:
+                pet_age = -1
+
+        # parse age from pet harbor to integers
+        try:
+            pharbor_age = int(pharbor_age.replace("Years", "").strip())
+        except:
+            pharbor_age = -1
+
+        if pet_age == -1 and pharbor_age == -1:
+            return 0.8
+        elif pet_age == -1:
+            return 0.8
+        elif pharbor_age == -1:
+            return 0.8
+        elif pet_age == pharbor_age:
+            return 1
+        else:
+            difference = abs(pet_age - pharbor_age)
+            score = 0.6 / (difference + 1) + 1.0 / (difference + 1)
+            return score
+
     def get_transformed_color(self, main_color):
         main_color = main_color.lower()
         main_color = main_color.replace('org', 'orange')
@@ -136,6 +176,7 @@ if __name__ == '__main__':
     # per = m.match('Male', "Gender Unknown", gender=True)
     # print(per)
     # print(m.match('Domestic Short Hair', 'Domestic Shorthair', breed=True))
-    main_color = m.get_transformed_color('Brn Tabby')
-    print(main_color)
-    print(m.match(main_color, 'Effy is a brown cat', color=True))
+    # main_color = m.get_transformed_color('Brn Tabby')
+    # print(main_color)
+    # print(m.match(main_color, 'Effy is a brown cat', color=True))
+    print(m.match_age('sfd', 'Age Unknown'))
